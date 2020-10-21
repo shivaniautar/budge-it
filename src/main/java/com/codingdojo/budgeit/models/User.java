@@ -49,7 +49,7 @@ public class User {
     
     
     //One person has One budget
-    @OneToOne(mappedBy="budget", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToOne(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private Budget budget;
     
 
