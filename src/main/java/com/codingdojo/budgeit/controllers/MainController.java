@@ -10,11 +10,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.codingdojo.budgeit.models.Budget;
 import com.codingdojo.budgeit.models.User;
+import com.codingdojo.budgeit.services.BudgetService;
+import com.codingdojo.budgeit.services.ExpenseService;
 import com.codingdojo.budgeit.services.UserService;
 import com.codingdojo.budgeit.validators.UserValidator;
 
@@ -25,8 +29,10 @@ import com.codingdojo.budgeit.validators.UserValidator;
 public class MainController {
 	@Autowired
 	UserService userService;
-//	@Autowired
-//    IdeaService ideaService;
+	@Autowired
+    BudgetService budgetService;
+	@Autowired
+    ExpenseService expenseService;
 	@Autowired
 	UserValidator userValidator;
 	
@@ -34,10 +40,6 @@ public class MainController {
     public String loginReg(@ModelAttribute("user") User user) {
         return "loginReg.jsp";
     }
-	 @RequestMapping("/login")
-	    public String login() {
-	        return "loginPage.jsp";
-	    }
     
     @RequestMapping(value="/registration", method=RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, HttpSession session) {
@@ -49,7 +51,7 @@ public class MainController {
         	User newUser=userService.registerUser(user);
         	session.setAttribute("userId", newUser.getId());
         	session.setAttribute("user", newUser);
-        	return "redirect:/ideas";
+        	return "redirect:/budge-it";
         }
     }
     
@@ -60,14 +62,14 @@ public class MainController {
     		User thisUser = userService.findByEmail(email);
     		session.setAttribute("userId", thisUser.getId());
     		session.setAttribute("user", thisUser);
-    		return "redirect:/ideas";
+    		return "redirect:/budge-it";
     	}
         // failure
     	model.addAttribute("error", "Invalid login");
     	return "loginReg.jsp";
     	
     }
-    @GetMapping("/ideas")
+    @GetMapping("/budge-it")
 	public String showDashboard(HttpSession session, Model model) {
 		if(session.getAttribute("userId") != null) {
 	    	session.getAttribute("user");
@@ -93,11 +95,19 @@ public class MainController {
 //				id.add(longlist);
 //			}
 //			model.addAttribute("ids", id);
-			return "home.jsp";
+			return "Index.jsp";
 		}
 		return "redirect:/";
 		
 	}
+    
+    @GetMapping("/budget-it/newbudget")
+    public String newBudget(@ModelAttribute("budget") Budget budget, Model model, HttpSession session) {
+		Long id= (Long)session.getAttribute("userId");//get logged in user in session based on ID in session
+		User user =userService.findUserById(id);
+	return "NewBudgetPage.jsp";
+    }
+    
     
 //    
 //    @GetMapping("/ideas/new")
@@ -108,6 +118,20 @@ public class MainController {
 //		return "new.jsp";
 //	}
 //    
+    @PostMapping("/newbudget")
+	public String submitIdea(@ModelAttribute("budget") Budget budget, BindingResult result, HttpSession session) {
+	  	if(result.hasErrors()) {
+	  		return "NewBudgetPage.jsp";
+	  	}
+	  	Long id= (Long)session.getAttribute("userId");
+	  	User user =userService.findUserById(id);
+	  	budget.setUser(user);
+	  	budgetService.save(budget);
+	  	return "redirect:/budge-it";
+	  	
+	}
+    
+    
 //    @PostMapping("/ideas/newidea")
 //    public String submitIdea(@Valid @ModelAttribute("idea") Idea idea, BindingResult result, HttpSession session) {
 //    	if(result.hasErrors()) {
@@ -167,11 +191,11 @@ public class MainController {
 //	       ideaService.deleteIdea(id);
 //	       return "redirect:/ideas";
 //	   }
-//    @RequestMapping("/logout")
-//    public String logout(HttpSession session) {
-//    	session.invalidate();
-//    	return "redirect:/login";
-//	}
+    @RequestMapping("/logout")
+    public String logout(HttpSession session) {
+    	session.invalidate();
+    	return "redirect:/";
+	}
 //    
 //    @RequestMapping(value="/ideas/like/{id}", method=RequestMethod.POST)
 //	public String like(@PathVariable("id") Long id, @ModelAttribute("idea") Idea idea, BindingResult result, Model model, HttpSession session) {
