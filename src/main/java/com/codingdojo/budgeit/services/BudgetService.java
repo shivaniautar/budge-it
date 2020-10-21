@@ -1,6 +1,5 @@
 package com.codingdojo.budgeit.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,9 @@ public class BudgetService {
 	
 	//findAll
 	
-	public List<Budget> findAllBudgets(){
-		return budgetRepository.findAll();
-	}
+//	public List<Budget> findAllBudgets(){
+//		return budgetRepository.findAll();
+//	}
 
 // find by id 
 	public Budget findById(Long id) {

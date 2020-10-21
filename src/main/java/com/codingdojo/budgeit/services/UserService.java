@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.codingdojo.budgeit.models.User;
 import com.codingdojo.budgeit.repositories.UserRepository;
 
-
 @Service
 public class UserService {
 	@Autowired

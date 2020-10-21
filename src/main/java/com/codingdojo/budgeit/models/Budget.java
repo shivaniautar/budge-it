@@ -1,6 +1,7 @@
 package com.codingdojo.budgeit.models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -36,16 +38,21 @@ public class Budget {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
+    
+    
+	//One budget may have many expenses
+    @OneToMany(mappedBy="budget", fetch = FetchType.LAZY)
+    private List<Expense> Expenses;
 
     
     //__________________CONSTRUCTORS____________________
     
 	public Budget() {
 	}
-
-
+	
+	
+	
 	public Budget(Long id, @NotEmpty double budgetAmount, Date createdAt, Date updatedAt, User user) {
-		super();
 		this.id = id;
 		this.budgetAmount = budgetAmount;
 		this.createdAt = createdAt;
@@ -104,6 +111,18 @@ public class Budget {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+
+
+	public List<Expense> getExpenses() {
+		return Expenses;
+	}
+
+
+
+	public void setExpenses(List<Expense> expenses) {
+		Expenses = expenses;
 	}
 	
     

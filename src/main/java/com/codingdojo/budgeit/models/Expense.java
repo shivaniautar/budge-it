@@ -37,26 +37,29 @@ public class Expense {
     //________________RELATIONSHIPS_____________________
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="creator_id")
-    private User creator;
+    @JoinColumn(name="budget_id")
+    private Budget budget;
     
     //__________________CONSTRUCTORS____________________
     
 	public Expense() {
 	}
 	
-	public Expense(Long id, @NotEmpty String expenseType, @NotEmpty double expenseAmount, Date createdAt,
-			Date updatedAt, User creator) {
-		super();
+	
+	
+    public Expense(Long id, @NotEmpty String expenseType, @NotEmpty double expenseAmount, Date createdAt,
+			Date updatedAt, Budget budget) {
 		this.id = id;
 		this.expenseType = expenseType;
 		this.expenseAmount = expenseAmount;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.creator = creator;
+		this.budget = budget;
 	}
-	
-    //__________________GETTERS & SETTERS____________________
+
+
+
+	//__________________GETTERS & SETTERS____________________
 	
 	
 
@@ -80,10 +83,6 @@ public class Expense {
 		return updatedAt;
 	}
 
-	public User getCreator() {
-		return creator;
-	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -104,9 +103,14 @@ public class Expense {
 		this.updatedAt = updatedAt;
 	}
 
-	public void setCreator(User creator) {
-		this.creator = creator;
+
+
+	public Budget getBudget() {
+		return budget;
 	}
 
+	public void setBudget(Budget budget) {
+		this.budget = budget;
+	}
 
 }
