@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,7 +63,11 @@ public class MainController {
     		User thisUser = userService.findByEmail(email);
     		session.setAttribute("userId", thisUser.getId());
     		session.setAttribute("user", thisUser);
-    		return "redirect:/budge-it";
+    		
+    	  	Long u_id= (Long)session.getAttribute("userId");
+    	  	Long id = (Long)(userService.findUserById(u_id)).getBudget().getId();
+    	  	System.out.println(id);
+    	  	return "redirect:/budge-it/"+ id +"/home";
     	}
         // failure
     	model.addAttribute("error", "Invalid login");
@@ -73,28 +78,13 @@ public class MainController {
 	public String showDashboard(HttpSession session, Model model) {
 		if(session.getAttribute("userId") != null) {
 	    	session.getAttribute("user");
-	    	//for sorting by likes
-//			List<Idea> ideas = ideaService.findAllIdeas();
-//			Collections.sort(ideas, (a,b)->{
-//				return a.getUsers().size()-b.getUsers().size();
-//			});
+//	    	User cUser = session.getAttribute("userId");	
+//			model.addAttribute("budgeet", userService.findUserById(Id).getBudget();
 //			model.addAttribute("ideas", ideas);
 //			User cUser = session.getAttribute("userId");
 //			if(ideaService.ideaLikedByUser(ideas, cUser); {
 //				model.addAttribute("liked", "true");
 //			}
-			//Empty list for ids
-//			List<List <Long>> id = new ArrayList <>();
-//			for (int i=0; i<ideas.size();i++) {
-//				List<Long> longlist = new ArrayList<>();
-//				for(int j=0;j<ideas.get(i).getUsers().size();j++) {
-//					longlist.add(ideas.get(i).getUsers().get(j).getId());
-//					
-//					
-//				}
-//				id.add(longlist);
-//			}
-//			model.addAttribute("ids", id);
 			return "Index.jsp";
 		}
 		return "redirect:/";
@@ -107,28 +97,38 @@ public class MainController {
 		User user =userService.findUserById(id);
 	return "NewBudgetPage.jsp";
     }
+       
+	@RequestMapping("/budget-it/{id}/home")
+	public String budgetHome(@PathVariable("id") Long id, Model model, HttpSession session,BindingResult result) {
+		if(session.getAttribute("userId") != null) {
+	    	session.getAttribute("user");
+	    	
+			if(result.hasErrors()) {
+			return "redirect:/budget-it/" + id +"/home";
+			}
+	    	
+	    	model.addAttribute("user", session.getAttribute("user"));
+	    	model.addAttribute("budget", budgetService.findById(id));
+			return "BudgetHome.jsp";
+		}
+		return "redirect:/";
+	}
     
-    
-//    
-//    @GetMapping("/ideas/new")
-//	public String newIdea(@ModelAttribute("idea") Idea idea, Model model, HttpSession session) {
-////    	model.addAttribute("users",userService.allUsers());//get all users
-//    	Long id= (Long)session.getAttribute("userId");//get logged in user in session based on ID in session
-//    	User user =userService.findUserById(id);
-//		return "new.jsp";
-//	}
-//    
     @PostMapping("/newbudget")
-	public String submitIdea(@ModelAttribute("budget") Budget budget, BindingResult result, HttpSession session) {
+	public String submitBudget(@Valid @ModelAttribute("budget") Budget budget, BindingResult result, HttpSession session, Model model) {
 	  	if(result.hasErrors()) {
+			if(budget.getBudgetAmount() == 0.0) {
+			model.addAttribute("error", "You must enter a budget amount!!!");
 	  		return "NewBudgetPage.jsp";
+			}
 	  	}
-	  	Long id= (Long)session.getAttribute("userId");
-	  	User user =userService.findUserById(id);
+	  	
+	  	Long u_id= (Long)session.getAttribute("userId");
+	  	User user =userService.findUserById(u_id);
 	  	budget.setUser(user);
 	  	budgetService.save(budget);
-	  	return "redirect:/budge-it";
-	  	
+	  	Long id = (Long)userService.findUserById(u_id).getBudget().getId();
+	  	return "redirect:/budge-it/"+ id +"/home";
 	}
     
     

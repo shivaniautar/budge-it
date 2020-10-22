@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
@@ -25,7 +26,7 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotEmpty
+    @Digits(integer=4, fraction=0)
     private double budgetAmount;
     
     @Column(updatable=false)
@@ -50,15 +51,19 @@ public class Budget {
 	public Budget() {
 	}
 	
-	
-	
-	public Budget(Long id, @NotEmpty double budgetAmount, Date createdAt, Date updatedAt, User user) {
+	public Budget(Long id, @Digits(integer = 4, fraction = 0) double budgetAmount, Date createdAt, Date updatedAt,
+			User user, List<Expense> expenses) {
+		super();
 		this.id = id;
 		this.budgetAmount = budgetAmount;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.user = user;
+		Expenses = expenses;
 	}
+	
+	
+
 	
     
     //__________________GETTERS & SETTERS____________________

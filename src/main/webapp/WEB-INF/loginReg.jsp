@@ -34,6 +34,8 @@
             <form:password path="passwordConfirmation"/>
 
         </p>
+        
+        
         <input type="submit" value="Register!"/>
     </form:form>
     <h2>or</h2><br>

@@ -9,25 +9,21 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Budge-it</title>
+<title>Budge-it!</title>
 </head>
 <body>
 
-<h1>NEW BUDGET PAGE</h1>
+<h1>HELLOOOOOOO</h1>
+<h1>Welcome, <c:out value="${user.firstName}" /> <c:out value="${user.lastName}" /></h1>
 
 				<p style="color: red;"><c:out value="${error}" /></p>
 				
 			    <p style="color: red;"><form:errors path="budget.*"/></p>
+				<p style="color: red;"><c:out value="${error}" /></p>
 
-	<form:form action="/newbudget" method="post" modelAttribute="budget">
-		<form:label path="budgetAmount">Content:</form:label>
-<%-- 		<p style="color:red"><form:errors path="budgetAmount"/></p> --%>
-		<form:input path="budgetAmount"/><br>
-		
-		<input type="submit" value="Create"/>
-	</form:form>
+<h3>HEY YOURE INNNNN!</h3>
 
-
+<a href="/logout">Logout</a>
 
 </body>
 </html>
